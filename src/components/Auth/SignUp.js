@@ -4,18 +4,9 @@ import { Link as RouterLink } from 'react-router-dom';
 import useForm from '../../utils/useForm';
 import { validateSignUp } from '../../utils/validators';
 import { AuthActions } from '../../redux/actions/authActions';
-import {
-  Box,
-  Card,
-  CardActions,
-  CardContent,
-  CardHeader,
-  Link,
-  TextField,
-  Typography
-} from '@material-ui/core';
+import { Box, Card, CardActions, CardContent, CardHeader, Link, TextField, Typography } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
-import { user$ } from '../../services/auth';
+import GoogleButton from './GoogleButton';
 
 const initialValues = {
   name: '',
@@ -24,11 +15,12 @@ const initialValues = {
   confirmPassword: ''
 };
 
-function SignUp({ dispatch, authError, isSubmitting, history }) {
+function SignUp({ userProfile,redirect, dispatch, authError, isSubmitting, history }) {
   useEffect(() => {
-    const sub = user$.subscribe(user => user && history.push('/dashboard'));
-    return () => sub.unsubscribe();
-  }, []);
+    if (userProfile && userProfile !== 'No User') {
+      redirect ? history.push(`/tv/${redirect}`) : history.push('/dashboard');
+    }
+  }, [userProfile]);
 
   const { values, handleChange, handleBlur, handleSubmit, errors } = useForm(
     initialValues,
@@ -115,11 +107,14 @@ function SignUp({ dispatch, authError, isSubmitting, history }) {
           </Link>
         </Box>
       </Box>
+      <GoogleButton />
     </form>
   );
 }
 
 const mapStateToProps = state => ({
+  userProfile: state.user.profile,
+  redirect: state.user.redirect,
   authError: state.user.error,
   isSubmitting: state.user.isSubmitting
 });

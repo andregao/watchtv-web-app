@@ -1,61 +1,105 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Box,
   Container,
   ExpansionPanel,
   ExpansionPanelDetails,
   ExpansionPanelSummary,
-  Typography
+  Typography,
+  Button
 } from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { connect } from 'react-redux';
-import { ApiActions } from '../../../redux/actions/apiActions';
 import EpisodeList from './EpisodeList';
+import PopoverMenu from '../../layouts/PopoverMenu';
+import { AppActions } from '../../../redux/actions/appActions';
+import SelectSeasonButton from './SelectShowButton';
 
-function ShowSeasons({ seasons, seasonDetail, selectedShow, selectedSeason, dispatch }) {
-  const handleExpansionToggle = (showId, num) => (e, isExpanded) => {
+const ShowSeasons = ({
+                       seasons,
+                       appSeasons,
+                       shows,
+                       handleAddSeason,
+                       handleRemoveSeason,
+                       wizard = {},
+                       dispatch
+                     }) => {
+  const showId = shows.selectedShow;
+  const showData = shows[showId];
+  let selectedSeasonNum = null;
+  showData && (selectedSeasonNum = showData.selectedSeason);
+
+  const handleExpansionToggle = (seasonNum, isExpanded) => {
     isExpanded
-      ? dispatch(ApiActions.selectSeason(showId, num))
-      : dispatch(ApiActions.deselectSeason(showId));
+      ? dispatch(AppActions.selectSeason(showId, seasonNum))
+      : dispatch(AppActions.deselectSeason(showId));
   };
+
+  const isSelectedInWizard = seasonNum => wizard.seasons && wizard.seasons.includes(seasonNum);
+
+  const SelectButton = ({seasonNum}) => (
+    <SelectSeasonButton
+      seasonNum={seasonNum}
+      isSelected={isSelectedInWizard(seasonNum)}
+      showData={showData}
+      handleAddSeason={handleAddSeason}
+      handleRemoveSeason={handleRemoveSeason}
+    />
+  );
 
   return (
     <Container>
-      <Typography variant={'h6'} color={'textSecondary'} gutterBottom>
-        Seasons
-      </Typography>
+      {!handleAddSeason && (
+        <Typography variant={'h6'} color={'textSecondary'} gutterBottom>
+          Seasons
+        </Typography>
+      )}
       {seasons.map(season => (
-        <ExpansionPanel
-          key={season.id}
-          expanded={selectedSeason === season.season_number}
-          onChange={handleExpansionToggle(selectedShow, season.season_number)}
-        >
-          <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-            <Box display={'flex'} justifyContent={'space-between'} width={'100%'}>
-              <Typography color={'textPrimary'}>Season {season.season_number}</Typography>
-              <Typography color={'textSecondary'}>{season.episode_count} episodes</Typography>
-            </Box>
-          </ExpansionPanelSummary>
-          <ExpansionPanelDetails>
-            <>
-            {seasonDetail[`${selectedShow}s${season.season_number}`] && (
-              <EpisodeList
-                episodes={seasonDetail[`${selectedShow}s${season.season_number}`].episodes}
-              />
-            )}
-            </>
-          </ExpansionPanelDetails>
-        </ExpansionPanel>
+        <Box key={season.id}>
+          <ExpansionPanel
+            expanded={selectedSeasonNum === season.season_number}
+            onChange={(e, isExpanded) => handleExpansionToggle(season.season_number, isExpanded)}
+          >
+            <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+              <Box display={'flex'} justifyContent={'space-between'} width={'100%'}>
+                <Typography
+                  color={isSelectedInWizard(season.season_number) ? 'secondary' : 'textPrimary'}
+                >
+                  Season {season.season_number}
+                </Typography>
+                <Typography
+                  color={isSelectedInWizard(season.season_number) ? 'secondary' : 'textSecondary'}
+                >
+                  {season.episode_count} episodes
+                </Typography>
+              </Box>
+            </ExpansionPanelSummary>
+            <ExpansionPanelDetails>
+              <Box display={'flex'} flexDirection={'column'} alignItems={'center'}>
+                {handleAddSeason && (
+                  <SelectButton
+                    seasonNum={season.season_number}
+                  />
+                )}
+
+                {appSeasons[`${showId}s${season.season_number}`] && (
+                  <EpisodeList
+                    episodes={appSeasons[`${showId}s${season.season_number}`].episodes}
+                  />
+                )}
+
+                {handleAddSeason && season.episode_count > 8 && (
+                  <SelectButton
+                    seasonNum={season.season_number}
+                  />
+                )}
+              </Box>
+            </ExpansionPanelDetails>
+          </ExpansionPanel>
+        </Box>
       ))}
     </Container>
   );
-}
+};
 
-const mapStateToProps = state => ({
-  selectedShow: state.shows.selectedShow,
-  selectedSeason:
-    state.shows[state.shows.selectedShow] && state.shows[state.shows.selectedShow].selectedSeason,
-  seasonDetail: state.seasons
-});
-
-export default connect(mapStateToProps)(ShowSeasons);
+export default connect()(ShowSeasons);

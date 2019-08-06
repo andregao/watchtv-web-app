@@ -4,8 +4,7 @@ import Cast from './Cast';
 
 function ShowInfo({ genre, country, runtime, plot, id }) {
   return (
-    <Box mb={'1rem'}>
-      <Box display={'flex'} flexDirection={'column'} m={'1rem'}>
+    <Box m={'1rem'} display={'flex'} flexDirection={'column'}>
         {/*extra info*/}
         <Box display={'flex'} mb={'1rem'}>
           <InfoBlock primary={'Genre:'} secondary={genre} />
@@ -15,9 +14,7 @@ function ShowInfo({ genre, country, runtime, plot, id }) {
 
         {/* plot */}
         <InfoBlock primary={'Plot:'} secondary={plot} />
-      </Box>
 
-      <Cast id={id} />
     </Box>
   );
 }

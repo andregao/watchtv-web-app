@@ -8,7 +8,7 @@ import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider';
 import { blue, cyan, deepOrange } from '@material-ui/core/colors';
 import CssBaseline from '@material-ui/core/CssBaseline';
 
-import { appInit$, initializeApp } from './services/app';
+import { appInit$, initializeApp, navigate$ } from './services/app';
 import { saveNameToAuth, stopMonitoringAuth, user$ } from './services/auth';
 import Header from './components/layouts/Header';
 import Footer from './components/layouts/Footer';
@@ -16,13 +16,15 @@ import Search from './components/modals/Search';
 import EpisodeDetail from './components/modals/EpisodeDetail';
 import TalentDetail from './components/modals/TalentDetail';
 import { AuthActions } from './redux/actions/authActions';
+import TrackWizard from './components/modals/TrackWizard';
+import Notification from './components/layouts/Notification';
 
 const Dashboard = lazy(() => import('./components/Dashboard/Dashboard'));
 const Welcome = lazy(() => import('./components/Welcome/Welcome'));
 const SignIn = lazy(() => import('./components/Auth/SignIn'));
 const SignUp = lazy(() => import('./components/Auth/SignUp'));
 const ShowDetails = lazy(() => import('./components/Shows/ShowPage'));
-const Explore = lazy(() => import('./components/Explore/Explore'));
+// const Explore = lazy(() => import('./components/Explore/Explore'));
 
 const Loading = () => <Box>Loading...</Box>;
 
@@ -47,11 +49,14 @@ const theme = createMuiTheme({
   }
 });
 
-function App({ dispatch, history }) {
+const App = ({ search, episode, talent, track, dispatch, history }) => {
   const [appInit, setAppInit] = useState(false);
 
   useEffect(() => {
+    // get API configuration, start auth service
     initializeApp();
+
+    // listens to auth service
     user$.subscribe(authUser => {
       if (authUser) {
         authUser.displayName
@@ -59,11 +64,20 @@ function App({ dispatch, history }) {
           : saveNameToAuth();
       } else {
         dispatch(AuthActions.notSignedIn());
-        history.location.pathname === '/dashboard' && history.push('/welcome');
       }
     });
+
+    // once all initializations had started, mount app component
     appInit$.subscribe(() => setAppInit(true));
-    return () => stopMonitoringAuth();
+
+    // navigation helper
+    const navSub = navigate$.subscribe(path => history.push(path));
+
+    return () => {
+      // clean up listeners
+      stopMonitoringAuth();
+      navSub.unsubscribe();
+    };
   }, []);
 
   return (
@@ -74,7 +88,7 @@ function App({ dispatch, history }) {
             <Header />
             <Box
               flex={'1 0 auto'}
-              width={'95%'}
+              width={'100%'}
               maxWidth={'1280px'}
               alignSelf={'center'}
               display={'flex'}
@@ -88,23 +102,27 @@ function App({ dispatch, history }) {
                   <Route path={'/signup'} component={SignUp} />
                   <Route path={'/dashboard'} component={Dashboard} />
                   <Route path={'/welcome'} component={Welcome} />
-                  <Route path={'/explore'} component={Explore} />
                   <Route path={'/tv/:tvId'} component={ShowDetails} />
+                  {/*<Route path={'/explore'} component={Explore} />*/}
                 </Switch>
               </Suspense>
             </Box>
             <Footer />
 
             {/* Modals */}
-            <Search />
-            <EpisodeDetail />
-            <TalentDetail />
+            {search && <Search open={search} />}
+            {episode && <EpisodeDetail open={episode} />}
+            {talent && <TalentDetail open={talent} />}
+            {track && <TrackWizard open={track} />}
+
+            {/* Notifications */}
+            <Notification history={history} />
           </CssBaseline>
         </MuiThemeProvider>
       </RootContainer>
     )
   );
-}
+};
 
 const RootContainer = styled.div`
   margin: 0;
@@ -116,4 +134,11 @@ const RootContainer = styled.div`
   flex-direction: column;
 `;
 
-export default withRouter(connect()(App));
+const mapStateToProps = state => ({
+  search: state.layout.searchOpen,
+  episode: state.layout.episodeDetailOpen,
+  talent: !!state.talents.selectedTalent,
+  track: state.trackWizard
+});
+
+export default withRouter(connect(mapStateToProps)(App));

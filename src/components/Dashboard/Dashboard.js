@@ -1,37 +1,38 @@
 import React, { useEffect, useState } from 'react';
-import { Tabs, Tab, Box } from '@material-ui/core';
+import { Tabs, Tab, Box, Typography, Button } from '@material-ui/core';
 import { connect } from 'react-redux';
-import ShowList from '../modals/ShowList';
-import Inbox from './Inbox';
+import ShowList from '../Shows/ShowList';
+import Tracking from './Tracking';
+import { LayoutActions } from '../../redux/actions/layoutActions';
+import { navigateTo } from '../../services/app';
 
-function Dashboard({ userData }) {
+function Dashboard({ userProfile, trackShows, favShows, appSeasons, history,dispatch }) {
+  useEffect(() => {
+    userProfile === 'No User' && history.push('/welcome');
+  }, [userProfile]);
+
   const [selectedIndex, setSelectedIndex] = useState(0);
   const handleSelectTab = (e, i) => setSelectedIndex(i);
-  const [trackShows, setTrackShows] = useState(null);
-  const [favShows, setFavShows] = useState(null);
 
-  useEffect(() => {
-    if (userData) {
-      mapShows(userData.track, setTrackShows);
-      mapShows(userData.fav, setFavShows);
-    }
-  }, [userData]);
   return (
     <Box width={'100%'} maxWidth={600}>
       <Tabs variant={'fullWidth'} value={selectedIndex} onChange={handleSelectTab}>
-        <Tab label={'Inbox'} />
-        <Tab label={'My Shows'} />
+        <Tab label={'Following'} />
+        <Tab label={'Favorites'} />
       </Tabs>
       <TabContent ownIndex={0} selectedIndex={selectedIndex}>
-        {trackShows && <Inbox trackShows={trackShows} />}
+        {trackShows.length ? (
+          <Tracking trackShows={trackShows} appSeasons={appSeasons} />
+        ) : (
+          <PlaceHolder message={'Not Following Any Show'} dispatch={dispatch} />
+        )}
       </TabContent>
       <TabContent ownIndex={1} selectedIndex={selectedIndex}>
-        Currently Tracking:
-        {trackShows && <ShowList shows={trackShows} handleClick={() => {
-        }} />}
-        Favorite Shows
-        {favShows && <ShowList shows={favShows} handleClick={() => {
-        }} />}
+        {favShows.length ? (
+          <ShowList shows={favShows} />
+        ) : (
+          <PlaceHolder message={'No Favorite Yet'} dispatch={dispatch} />
+        )}
       </TabContent>
     </Box>
   );
@@ -45,14 +46,25 @@ function TabContent({ selectedIndex, ownIndex, children, ...rest }) {
   );
 }
 
-const mapShows = (obj, setter) => {
-  // map show data to array and add id property
-  const target = Object.keys(obj).map(id => ({ ...obj[id], id }));
-  target.length !== 0 ? setter(target) : setter(null);
-};
+const PlaceHolder = ({ message, dispatch }) => (
+  <Box mt={'2rem'} display={'flex'} flexDirection={'column'} alignItems={'center'}>
+    <Typography variant={'body1'} align={'center'} color={'textSecondary'} gutterBottom>
+      {message}
+    </Typography>
+    <Button
+      variant="contained"
+      color="secondary"
+      onClick={() => dispatch(LayoutActions.toggleSearch())}
+    >
+      Find a TV show
+    </Button>
+  </Box>
+);
 
 const mapStateToProps = state => ({
-  userData: state.user.data,
-  shows: state.shows
+  userProfile: state.user.profile,
+  trackShows: state.user.trackShows,
+  favShows: state.user.favShows,
+  appSeasons: state.seasons
 });
 export default connect(mapStateToProps)(Dashboard);

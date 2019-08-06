@@ -3,16 +3,29 @@ import {
   API_SEARCH,
   ApiActions,
   GET_SEASON_DETAIL,
+  GET_SEASON_DETAIL_BATCH,
   GET_SHOW_DETAIL,
-  GET_TALENT_DETAIL
+  GET_TALENT_DETAIL,
+  TRACK_ALL_SHOWS
 } from '../actions/apiActions';
-import { flatMap, map, mergeMap, pluck, switchMap, tap } from 'rxjs/operators';
+import {
+  catchError,
+  concatMap,
+  delay,
+  flatMap,
+  map,
+  mergeMap,
+  pluck,
+  switchMap,
+  tap
+} from 'rxjs/operators';
 import {
   fetchSeasonDetail,
   fetchShowDetail,
   fetchTalentDetail,
   searchShows
 } from '../../services/api';
+import { AppActions } from '../actions/appActions';
 
 const searchEpic = actions$ =>
   actions$.pipe(
@@ -30,7 +43,7 @@ const getShowDetailEpic = actions$ =>
     switchMap(id => fetchShowDetail(id)),
     flatMap(response => [
       ApiActions.getShowDetailSuccess(response),
-      ApiActions.setSelectedShow(response.id)
+      AppActions.setSelectedShow(response.id)
     ])
   );
 
@@ -38,14 +51,45 @@ const getSeasonDetailEpic = actions$ =>
   actions$.pipe(
     ofType(GET_SEASON_DETAIL),
     pluck('payload'),
-    mergeMap(({ showId, num }) =>
+    switchMap(({ showId, num }) =>
       fetchSeasonDetail(showId, num).pipe(
         flatMap(response => [
           ApiActions.getSeasonDetailSuccess(showId, response),
-          ApiActions.setSelectedSeason(showId, num)
-        ])
+          AppActions.setSelectedSeason(showId, num)
+        ]),
+        catchError(err => ApiActions.getSeasonDetailFail(err))
       )
     )
+  );
+
+const getSeasonDetailBatchEpic = actions$ =>
+  actions$.pipe(
+    ofType(GET_SEASON_DETAIL_BATCH),
+    pluck('payload'),
+    concatMap(({ showId, num }) =>
+      fetchSeasonDetail(showId, num).pipe(
+        map(response => ApiActions.getSeasonDetailSuccess(showId, response)),
+        catchError(err => ApiActions.getSeasonDetailFail(err)),
+        // TMDB rate limit their api calls hence the delayed concatenated event queue
+        delay(400)
+      )
+    )
+  );
+
+const updateTrackShowsEpic = actions$ =>
+  actions$.pipe(
+    ofType(TRACK_ALL_SHOWS),
+    pluck('payload'),
+    // map each show season to an get season detail action
+    flatMap(shows => {
+      const actionsArray = [];
+      shows.map(show =>
+        show.seasons.map(season =>
+          actionsArray.push(ApiActions.getSeasonDetailBatch(show.id, season))
+        )
+      );
+      return actionsArray;
+    })
   );
 
 const getTalentDetailEpic = action$ =>
@@ -53,14 +97,17 @@ const getTalentDetailEpic = action$ =>
     ofType(GET_TALENT_DETAIL),
     pluck('payload'),
     mergeMap(id => fetchTalentDetail(id)),
-    flatMap(response =>
-      [ApiActions.getTalentDetailSuccess(response), ApiActions.setSelectedTalent(response.id)]
-    )
+    flatMap(response => [
+      ApiActions.getTalentDetailSuccess(response),
+      AppActions.setSelectedTalent(response.id)
+    ])
   );
 
 export const apiEpics = combineEpics(
   searchEpic,
   getShowDetailEpic,
   getSeasonDetailEpic,
+  getSeasonDetailBatchEpic,
+  updateTrackShowsEpic,
   getTalentDetailEpic
 );

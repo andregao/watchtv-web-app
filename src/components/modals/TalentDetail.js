@@ -12,10 +12,10 @@ import React from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { getExternalLinkAttr, getImdbTalentLink, getImgElAttr } from '../../services/api';
-import { ApiActions } from '../../redux/actions/apiActions';
+import { AppActions } from '../../redux/actions/appActions';
 
 const TalentDetail = ({ open, talent, dispatch }) => {
-  const handleClose = () => dispatch(ApiActions.deselectTalent());
+  const handleClose = () => dispatch(AppActions.deselectTalent());
   return !talent ? null : (
     <DialogContainer
       maxWidth={'sm'}
@@ -88,7 +88,6 @@ const Profile = styled.img`
 `;
 
 const mapStateToProps = state => ({
-  open: !!state.talents.selectedTalent,
   talent: state.talents && state.talents[state.talents.selectedTalent]
 });
 

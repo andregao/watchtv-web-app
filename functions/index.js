@@ -1,14 +1,12 @@
 const https = require('https');
 const { authGuard } = require('./middleware/auth');
 const { app, functions, db } = require('./utils/config');
-const { tmdbKey, omdbKey, getApiConfig, fetchUserData } = require('./handlers/api');
-// const { createUser, signInUser } = require('./handlers/user');
+const { tmdbKey, omdbKey, getApiConfig, fetchUserData,updateUserData } = require('./handlers/api');
 const { countries } = require('./utils/countries');
 
-// app.post('/api/signup', createUser);
-// app.post('/api/signin', signInUser);
 app.get('/api/config', getApiConfig);
 app.get('/api/user', authGuard, fetchUserData);
+app.patch('/api/user', authGuard, updateUserData);
 
 // connect express to functions 'api' route
 exports.api = functions.https.onRequest(app);

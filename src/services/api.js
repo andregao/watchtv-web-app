@@ -3,13 +3,8 @@ import { map, mergeMap, take, tap } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 
 /*
-  all variables below
-1) once initialized won't change,
-2) root component(App) won't render until these are initialized,
-3) api functions won't be referenced until root renders,
-  they are:
-- consumed in api functions as CONSTANTS and do not have state
-- stored in function closures instead of the redux store
+  variables below are consumed in api functions as CONSTANTS
+  and do not need to be in the redux store
 */
 let TMDB_KEY = '';
 let OMDB_KEY = '';
@@ -64,6 +59,10 @@ export function fetchShowDetail(id) {
         );
       })
     );
+}
+
+export function fetchShowDetailBatch(trackShows) {
+
 }
 
 export function getImdbDetail(id, apiKey) {

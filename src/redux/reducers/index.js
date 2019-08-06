@@ -5,6 +5,7 @@ import showReducer from './showReducer';
 import seasonReducer from './seasonReducer';
 import talentReducer from './talentReducer';
 import userReducer from './userReducer';
+import trackWizardReducer from './trackWizardReducer';
 
 export const rootReducer = combineReducers({
   user: userReducer,
@@ -13,4 +14,5 @@ export const rootReducer = combineReducers({
   shows: showReducer,
   seasons: seasonReducer,
   talents: talentReducer,
+  trackWizard: trackWizardReducer,
 });

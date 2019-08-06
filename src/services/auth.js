@@ -6,12 +6,14 @@ import * as firebase from 'firebase/app';
 import 'firebase/auth';
 import firebaseConfig from './firebaseConfig';
 firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
 // end of development setup
 
 // production firebase setup
-// const auth = window.firebase.auth();
+// const firebase = window.firebase;
 // end of production setup
+
+const auth = firebase.auth();
+const provider = new firebase.auth.GoogleAuthProvider();
 
 const authInit = new Subject();
 export const authInit$ = authInit.asObservable();
@@ -55,6 +57,10 @@ export function signInWithEmail({ email, password }) {
 
 export function signUpWithEmail({ email, password }) {
   return from(auth.createUserWithEmailAndPassword(email.trim(), password));
+}
+
+export function signInWithGoogle(){
+  auth.signInWithRedirect(provider);
 }
 
 export function signOut() {

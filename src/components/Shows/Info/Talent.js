@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { Box, Paper, Typography } from '@material-ui/core';
 import { getImgElAttr } from '../../../services/api';
 import useDebounce from '../../../utils/useDebounce';
-import { ApiActions } from '../../../redux/actions/apiActions';
+import { AppActions } from '../../../redux/actions/appActions';
 
 function Talent({ talent, size, setSize, dispatch }) {
   const firstEl = useRef(null);
@@ -17,7 +17,7 @@ function Talent({ talent, size, setSize, dispatch }) {
     });
 
   const handleSelectTalent = id => () => {
-    dispatch(ApiActions.selectTalent(id));
+    dispatch(AppActions.selectTalent(id));
   };
 
   // listener effect: runs once

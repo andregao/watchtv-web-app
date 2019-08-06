@@ -7,9 +7,12 @@ import { Link } from 'react-router-dom';
 function Welcome({ dispatch, userProfile }) {
   return (
     <>
-      <Box mt={'3rem'}>
-        <Typography align={'center'} variant={'h6'}>
-          Welcome
+      <Box mt={'3rem'} px={'2rem'}>
+        <Typography align={'center'} variant={'h4'} gutterBottom>
+          Welcome to Your Personal TV Show Tracker
+        </Typography>
+        <Typography align={'center'} variant={'body1'} color={'textSecondary'} gutterBottom>
+          Browse, favorite or track shows so you don't miss an episode
         </Typography>
       </Box>
       <Box
@@ -27,8 +30,8 @@ function Welcome({ dispatch, userProfile }) {
           Find a TV show
         </Button>
         {userProfile === 'No User' && (
-          <Button variant="contained" color="primary" component={Link} to={'/signin'}>
-            Sign In
+          <Button variant="contained" color="primary" component={Link} to={'/signup'}>
+            Sign Up
           </Button>
         )}
       </Box>

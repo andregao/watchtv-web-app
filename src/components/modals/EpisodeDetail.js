@@ -73,7 +73,6 @@ const Thumbnail = styled.img`
 `;
 
 const mapStateToProps = state => ({
-  open: state.layout.episodeDetailOpen,
   episode: state.layout.episodeDetail
 });
 

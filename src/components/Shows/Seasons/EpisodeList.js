@@ -1,36 +1,45 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import { Box, Checkbox, Divider, Typography } from '@material-ui/core';
 import styled from 'styled-components';
 import { getImgElAttr } from '../../../services/api';
 import { LayoutActions } from '../../../redux/actions/layoutActions';
-import { connect } from 'react-redux';
+import { UserActions } from '../../../redux/actions/userActions';
 
-function EpisodeList({ episodes, watched, dispatch }) {
-  const handleClick = episodeData => e => {
-    e.target.type !== 'checkbox' && dispatch(LayoutActions.toggleEpisodeDetail(episodeData));
+const EpisodeList = ({ episodes, watched, dispatch }) => {
+  const handleEpisodeClick = episodeData => () => {
+    dispatch(LayoutActions.toggleEpisodeDetail(episodeData));
   };
-  const handleCheckboxClick = epNum => () => {
-    console.log('checked episode:', epNum);
+
+  const handleCheckboxClick = (e, episode) => {
+    e.stopPropagation();
+    const {show_id, season_number, episode_number} = episode;
+    const watchData = {
+      show: show_id,
+      season: season_number,
+      episode: episode_number,
+      watched: e.target.checked
+    };
+    // update redux store and database
+    dispatch(UserActions.watchEpisode(watchData));
   };
-  console.log('watched array', watched);
+
 
   return (
     <Box display={'flex'} flexDirection={'column'}>
       {episodes.map((episode, index) => (
-        <Box key={episode.id} display={'flex'} flexDirection={'column'}>
+        <div key={episode.id}>
           {index !== 0 && <Divider variant={'middle'} />}
           <Box
-            position={'relative'}
             display={'flex'}
             key={episode.id}
             alignItems={'center'}
             my={'.3rem'}
-            onClick={handleClick(episode)}
+            onClick={handleEpisodeClick(episode)}
           >
-            {watched && watched.includes(+episode.episode_number) && <WatchedOverlay />}
             {watched && (
               <Checkbox
-                onChange={handleCheckboxClick(episode.episode_number)}
+                onClick={e => handleCheckboxClick(e, episode)}
                 checked={watched.includes(+episode.episode_number)}
               />
             )}
@@ -55,7 +64,7 @@ function EpisodeList({ episodes, watched, dispatch }) {
               </EpisodeOverview>
             </Box>
           </Box>
-        </Box>
+        </div>
       ))}
     </Box>
   );
@@ -73,12 +82,5 @@ const EpisodeOverview = styled(Typography)`
   }
 `;
 
-const WatchedOverlay = styled.div`
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  border-radius: 5px;
-  background-color: rgba(0, 0, 0, 0.4);
-`;
 
 export default connect()(EpisodeList);

@@ -16,7 +16,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import { connect } from 'react-redux';
 import { LayoutActions } from '../../redux/actions/layoutActions';
 import { ApiActions } from '../../redux/actions/apiActions';
-import ShowList from './ShowList';
+import ShowList from '../Shows/ShowList';
 import useDebounce from '../../utils/useDebounce';
 
 const Transition = forwardRef(function Transition(props, ref) {
@@ -86,7 +86,6 @@ function Search({ open, dispatch, results }) {
 }
 
 const mapStateToProps = state => ({
-  open: state.layout.searchOpen,
   results: state.api.searchResults
 });
 

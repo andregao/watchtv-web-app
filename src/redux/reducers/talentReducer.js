@@ -1,4 +1,5 @@
-import { DESELECT_TALENT, GET_TALENT_DETAIL_SUCCESS, SET_SELECTED_TALENT } from '../actions/apiActions';
+import { DESELECT_TALENT, SET_SELECTED_TALENT } from '../actions/appActions';
+import { GET_TALENT_DETAIL_SUCCESS } from '../actions/apiActions';
 
 const initialState = { selectedTalent: null };
 

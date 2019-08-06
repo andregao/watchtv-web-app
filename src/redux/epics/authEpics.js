@@ -1,6 +1,6 @@
 import { combineEpics, ofType } from 'redux-observable';
-import { AuthActions, SIGN_IN, SIGN_OUT, SIGN_UP } from '../actions/authActions';
-import { catchError, exhaustMap, map, pluck, tap } from 'rxjs/operators';
+import { AuthActions, SAVE_REDIRECT, SIGN_IN, SIGN_OUT, SIGN_UP } from '../actions/authActions';
+import { catchError, exhaustMap, map, pluck, switchMap, tap } from 'rxjs/operators';
 import { signInWithEmail, signOut, signUpWithEmail, storeSignUpName } from '../../services/auth';
 
 const signInEpic = actions$ =>
@@ -32,8 +32,13 @@ const signOutEpic = actions$ => actions$.pipe(
   ofType(SIGN_OUT),
   exhaustMap(() => signOut().pipe(
     map(() => AuthActions.signOutSuccess()),
-    catchError(err => AuthActions.signOutFail(err))
+    catchError(err => [AuthActions.signOutFail(err)])
   ))
 );
 
-export const authEpics = combineEpics(signInEpic, signUpEpic, signOutEpic);
+const saveRedirectEpic = (actions$, state$) => actions$.pipe(
+  ofType(SAVE_REDIRECT),
+  map(() => AuthActions.saveRedirectSuccess(state$.value.shows.selectedShow))
+);
+
+export const authEpics = combineEpics(signInEpic, signUpEpic, signOutEpic, saveRedirectEpic);

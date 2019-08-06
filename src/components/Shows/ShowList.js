@@ -43,7 +43,7 @@ function getSecondaryText({ original_name, name, origin_country }) {
   return '';
 }
 
-const Poster = styled.img`
+export const Poster = styled.img`
   max-height: 15vw;
   margin-right: 0.8rem;
 `;

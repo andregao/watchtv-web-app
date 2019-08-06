@@ -9,13 +9,14 @@ import {
   Menu,
   MenuItem
 } from '@material-ui/core';
-import MenuIcon from '@material-ui/icons/Menu';
+import TvIcon from '@material-ui/icons/Tv';
 import SearchIcon from '@material-ui/icons/Search';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { LayoutActions } from '../../redux/actions/layoutActions';
 import { AuthActions } from '../../redux/actions/authActions';
 import { LoadingCircle } from './LoadingCircle';
+import { navigateTo } from '../../services/app';
 
 function Header({ userProfile, dispatch }) {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -24,14 +25,20 @@ function Header({ userProfile, dispatch }) {
     setAnchorEl(null);
     dispatch(AuthActions.signOut());
   };
+  const saveRedirect = () => dispatch(AuthActions.saveRedirect());
 
   return (
     <AppBar position={'sticky'}>
       <Box component={Toolbar} display={'flex'}>
-        <IconButton edge="start" color="inherit" aria-label="Menu">
-          <MenuIcon />
+        <IconButton
+          edge="start"
+          color="inherit"
+          aria-label="Dashboard"
+          onClick={() => navigateTo('/dashboard')}
+        >
+          <TvIcon />
         </IconButton>
-        <Typography color={'inherit'} variant="h6" component={Link} to={'/welcome'}>
+        <Typography color={'inherit'} variant={'h6'} component={Link} to={'/welcome'}>
           WatchTV
         </Typography>
 
@@ -41,8 +48,8 @@ function Header({ userProfile, dispatch }) {
         ) : (
           <>
             {userProfile === 'No User' ? (
-              <Button color={'inherit'} component={Link} to={'/signup'}>
-                Sign Up
+              <Button color={'inherit'} component={Link} to={'/signin'} onClick={saveRedirect}>
+                Sign In
               </Button>
             ) : (
               <>
