@@ -2,7 +2,8 @@ import { API_SEARCH_SUCCESS } from '../actions/apiActions';
 import { SIGN_OUT_SUCCESS } from '../actions/authActions';
 
 const initialState = {
-  searchResults: null
+  searchResults: null,
+  error: null
 };
 
 export default function apiReducer(state = initialState, action) {

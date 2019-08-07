@@ -1,6 +1,5 @@
-import { Box, List, ListItem, ListItemText, Typography } from '@material-ui/core';
+import { Box, Typography } from '@material-ui/core';
 import React from 'react';
-import Cast from './Cast';
 
 function ShowInfo({ genre, country, runtime, plot, id }) {
   return (

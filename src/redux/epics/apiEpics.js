@@ -8,23 +8,8 @@ import {
   GET_TALENT_DETAIL,
   TRACK_ALL_SHOWS
 } from '../actions/apiActions';
-import {
-  catchError,
-  concatMap,
-  delay,
-  flatMap,
-  map,
-  mergeMap,
-  pluck,
-  switchMap,
-  tap
-} from 'rxjs/operators';
-import {
-  fetchSeasonDetail,
-  fetchShowDetail,
-  fetchTalentDetail,
-  searchShows
-} from '../../services/api';
+import { catchError, concatMap, delay, flatMap, map, mergeMap, pluck, switchMap } from 'rxjs/operators';
+import { fetchSeasonDetail, fetchShowDetail, fetchTalentDetail, searchShows } from '../../services/api';
 import { AppActions } from '../actions/appActions';
 
 const searchEpic = actions$ =>
@@ -40,11 +25,26 @@ const getShowDetailEpic = actions$ =>
   actions$.pipe(
     ofType(GET_SHOW_DETAIL),
     pluck('payload'),
-    switchMap(id => fetchShowDetail(id)),
-    flatMap(response => [
-      ApiActions.getShowDetailSuccess(response),
-      AppActions.setSelectedShow(response.id)
-    ])
+    switchMap(id =>
+      fetchShowDetail(id).pipe(
+        flatMap(showData =>
+          showData.error
+            ? [
+              ApiActions.getShowDetailSuccess(showData),
+              ApiActions.getShowDetailFail(showData.error),
+              AppActions.setSelectedShow(showData.id)
+            ]
+            : [ApiActions.getShowDetailSuccess(showData), AppActions.setSelectedShow(showData.id)]
+        ),
+        catchError(() => [
+          ApiActions.getShowDetailFail({
+            message: 'TMDB API is down, follow @themoviedb for updates',
+            variant: 'error',
+            link: { external: 'https://twitter.com/themoviedb', text: '@themoviedb' }
+          })
+        ])
+      )
+    )
   );
 
 const getSeasonDetailEpic = actions$ =>

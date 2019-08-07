@@ -1,5 +1,5 @@
 import { combineEpics, ofType } from 'redux-observable';
-import { map, pluck, tap } from 'rxjs/operators';
+import { map, pluck } from 'rxjs/operators';
 import { AppActions, SELECT_SEASON, SELECT_SHOW, SELECT_TALENT } from '../actions/appActions';
 import { ApiActions } from '../actions/apiActions';
 

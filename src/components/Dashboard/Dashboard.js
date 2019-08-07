@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { Tabs, Tab, Box, Typography, Button } from '@material-ui/core';
+import { Box, Button, Tab, Tabs, Typography } from '@material-ui/core';
 import { connect } from 'react-redux';
 import ShowList from '../Shows/ShowList';
 import Tracking from './Tracking';
 import { LayoutActions } from '../../redux/actions/layoutActions';
-import { navigateTo } from '../../services/app';
 
 function Dashboard({ userProfile, trackShows, favShows, appSeasons, history,dispatch }) {
   useEffect(() => {

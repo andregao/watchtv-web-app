@@ -5,7 +5,7 @@ import { Box } from '@material-ui/core';
 import styled from 'styled-components';
 import createMuiTheme from '@material-ui/core/styles/createMuiTheme';
 import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider';
-import { blue, cyan, deepOrange } from '@material-ui/core/colors';
+import { blue, cyan, deepOrange, green, purple } from '@material-ui/core/colors';
 import CssBaseline from '@material-ui/core/CssBaseline';
 
 import { appInit$, initializeApp, navigate$ } from './services/app';
@@ -40,16 +40,26 @@ const LandingComponent = lazy(() => {
   });
 });
 
-const theme = createMuiTheme({
+const darkTheme = createMuiTheme({
   palette: {
     type: 'dark',
     primary: deepOrange,
     secondary: blue,
+    action: {main: '#fff'},
     error: { main: cyan[500] }
   }
 });
 
-const App = ({ search, episode, talent, track, dispatch, history }) => {
+const lightTheme = createMuiTheme({
+  palette: {
+    primary: purple,
+    secondary: green,
+    action: {main: '#000'},
+  }
+});
+
+const App = ({ dark, search, episode, talent, track, notification, dispatch, history }) => {
+
   const [appInit, setAppInit] = useState(false);
 
   useEffect(() => {
@@ -83,7 +93,7 @@ const App = ({ search, episode, talent, track, dispatch, history }) => {
   return (
     appInit && (
       <RootContainer>
-        <MuiThemeProvider theme={theme}>
+        <MuiThemeProvider theme={dark ? darkTheme : lightTheme}>
           <CssBaseline>
             <Header />
             <Box
@@ -116,7 +126,9 @@ const App = ({ search, episode, talent, track, dispatch, history }) => {
             {track && <TrackWizard open={track} />}
 
             {/* Notifications */}
-            <Notification history={history} />
+            {notification && (
+              <Notification notification={notification} history={history} dispatch={dispatch} />
+            )}
           </CssBaseline>
         </MuiThemeProvider>
       </RootContainer>
@@ -135,10 +147,12 @@ const RootContainer = styled.div`
 `;
 
 const mapStateToProps = state => ({
+  dark: state.user.darkTheme,
   search: state.layout.searchOpen,
   episode: state.layout.episodeDetailOpen,
   talent: !!state.talents.selectedTalent,
-  track: state.trackWizard
+  track: state.trackWizard,
+  notification: state.layout.notification
 });
 
 export default withRouter(connect(mapStateToProps)(App));

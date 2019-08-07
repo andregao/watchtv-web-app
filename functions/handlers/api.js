@@ -16,7 +16,7 @@ exports.fetchUserData = async (req, res) => {
   const userDataSnapshot = await dbRootCol.doc(path).get();
   // New User
   if (!userDataSnapshot.exists) {
-    const initialData = { fav: [], track: [] };
+    const initialData = { fav: [], track: [], dark: true };
     await dbRootCol.doc(path).set(initialData);
     const newUserDataSnapshot = await dbRootCol.doc(path).get();
     return res.status(200).send(newUserDataSnapshot.data());

@@ -1,13 +1,5 @@
 import React, { forwardRef } from 'react';
-import {
-  Container,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Button,
-  Slide
-} from '@material-ui/core';
+import { Button, Container, Dialog, DialogActions, DialogContent, DialogTitle, Slide } from '@material-ui/core';
 import { connect } from 'react-redux';
 import { LayoutActions } from '../../redux/actions/layoutActions';
 import ShowSeasons from '../Shows/Seasons/ShowSeasons';
@@ -33,7 +25,11 @@ const TrackWizard = ({ open, showId, shows, appSeasons, wizard, dispatch }) => {
   const handleTrackShow = () => {
     dispatch(UserActions.trackShow(wizard));
     handleClose();
-    const notify = { message: `Following ${wizard.name}`, variant: 'success' };
+    const notify = {
+      message: `Following ${wizard.name}`,
+      variant: 'success',
+      link: { internal: '/dashboard', text: 'Go To DashBoard' }
+    };
     dispatch(LayoutActions.toggleNotification(notify));
   };
 
@@ -48,7 +44,6 @@ const TrackWizard = ({ open, showId, shows, appSeasons, wizard, dispatch }) => {
         maxWidth={'md'}
         style={{ padding: 0 }}
         component={Dialog}
-        PaperProps={{ style: { backgroundColor: '#303030' } }}
         fullScreen
         open={open}
         onClose={handleClose}

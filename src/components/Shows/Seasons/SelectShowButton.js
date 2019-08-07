@@ -19,9 +19,9 @@ const SelectSeasonButton = ({
   return (
     <>
       <Button
-        variant={'outlined'}
+        variant={isSelected ? 'outlined' : 'contained'}
         fullWidth
-        color={'default'}
+        color={isSelected ? 'default' : 'secondary'}
         size={'small'}
         onClick={
           isSelected ? handleRemoveSeasonMenuOpen : () => handleAddSeason(seasonNum, showData)
@@ -32,9 +32,7 @@ const SelectSeasonButton = ({
       <PopoverMenu
         anchorEl={removeSeasonMenuAnchor}
         onClose={() => setRemoveSeasonMenuAnchor(null)}
-        items={[
-          { text: 'Deselect', onClick: () => handleRemoveSeasonClick(seasonNum) }
-        ]}
+        items={[{ text: 'Deselect', onClick: () => handleRemoveSeasonClick(seasonNum) }]}
       />
     </>
   );

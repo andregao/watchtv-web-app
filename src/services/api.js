@@ -1,5 +1,5 @@
 import { ajax } from 'rxjs/ajax';
-import { map, mergeMap, take, tap } from 'rxjs/operators';
+import { catchError, map, mergeMap } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 
 /*
@@ -20,14 +20,11 @@ const apiInit = new Subject();
 export const apiInit$ = apiInit.asObservable();
 
 export function initializeApi() {
-  ajax
-    .getJSON(`${FUNCTIONS_BASE_URL}/config`)
-    .subscribe(config => {
-      storeConfig(config);
-      apiInit.next();
-    });
+  ajax.getJSON(`${FUNCTIONS_BASE_URL}/config`).subscribe(config => {
+    storeConfig(config);
+    apiInit.next();
+  });
 }
-
 
 export function searchShows(query, pageNum = 1) {
   query = query.trim().toLowerCase();
@@ -45,24 +42,37 @@ export function fetchShowDetail(id) {
       mergeMap(tmdbData => {
         const id = tmdbData.external_ids.imdb_id;
         return getImdbDetail(id, OMDB_KEY).pipe(
-          map(({ Plot, imdbRating, imdbVotes, Genre, Runtime, Country }) => {
+          map(({ Plot, imdbRating, Genre, Runtime, Country }) => {
             const extraInfo = {
               plot: Plot,
               rating: imdbRating,
-              votes: imdbVotes,
               genre: Genre,
               runtime: Runtime,
               country: Country
             };
             return { ...tmdbData, imdb: extraInfo };
+          }),
+          catchError(() => {
+            const extraInfo = {
+              plot: tmdbData.overview,
+              genre: tmdbData.genres.reduce(
+                (acc, curr, index) => (index === 0 ? acc + curr.name : acc + `, ${curr.name}`),
+                ''
+              ),
+              runtime: `${tmdbData.episode_run_time[0]} mins`,
+              country: tmdbData.origin_country
+            };
+            return [
+              {
+                ...tmdbData,
+                imdb: extraInfo,
+                error: {message:'OMDB API is down, TMDB fallback data used', variant:'info'}
+              }
+            ];
           })
         );
       })
     );
-}
-
-export function fetchShowDetailBatch(trackShows) {
-
 }
 
 export function getImdbDetail(id, apiKey) {
@@ -70,9 +80,9 @@ export function getImdbDetail(id, apiKey) {
 }
 
 export function fetchSeasonDetail(showId, num) {
-  return ajax.getJSON(`${TMDB_BASE_URL}/tv/${showId}/season/${num}?${TMDB_KEY}`).pipe(
-    map(reverseOrder('episodes'))
-  );
+  return ajax
+    .getJSON(`${TMDB_BASE_URL}/tv/${showId}/season/${num}?${TMDB_KEY}`)
+    .pipe(map(reverseOrder('episodes')));
 }
 
 export function fetchTalentDetail(id) {

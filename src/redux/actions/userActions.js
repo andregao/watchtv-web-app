@@ -6,6 +6,8 @@ export const WIZARD_REMOVE_SEASON = '[WIZARD] REMOVE SEASON';
 export const TRACK_SHOW = '[USER] TRACK SHOW';
 export const REMOVE_TRACK_SHOW = '[USER] REMOVE TRACK SHOW';
 export const SORT_TRACK_SHOWS = '[USER] SORT TRACK SHOWS';
+export const SWITCH_THEME = '[USER] SWITCH THEME';
+export const SWITCH_THEME_SUCCESS = '[USER] SWITCH THEME SUCCESS';
 
 export const UserActions = {
   watchEpisode: watchData => ({ type: WATCH_EPISODE, payload: watchData }),
@@ -16,4 +18,6 @@ export const UserActions = {
   trackShow: wizardData => ({ type: TRACK_SHOW, payload: wizardData }),
   removeTrackShow: showId => ({ type: REMOVE_TRACK_SHOW, payload: showId }),
   sortTrackShows: trackShows => ({ type: SORT_TRACK_SHOWS, payload: trackShows }),
+  switchTheme: () => ({ type: SWITCH_THEME }),
+  switchThemeSuccess: () => ({ type: SWITCH_THEME_SUCCESS })
 };

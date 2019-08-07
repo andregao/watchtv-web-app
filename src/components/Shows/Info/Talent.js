@@ -67,6 +67,7 @@ function Talent({ talent, size, setSize, dispatch }) {
 const Portrait = styled.img`
   width: 100%;
   object-fit: contain;
+  cursor: pointer;
 `;
 
 const mapStateToProps = state => ({

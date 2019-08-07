@@ -1,9 +1,16 @@
 import { FUNCTIONS_BASE_URL } from './api';
 import { ajax } from 'rxjs/ajax';
-import { DbActions } from '../redux/actions/dbActions';
 
 export function fetchUserData(token) {
   return ajax.getJSON(`${FUNCTIONS_BASE_URL}/user`, { authorization: `Bearer ${token}` });
+}
+
+export function updateTheme(darkTheme, token) {
+  return ajax.patch(
+    `${FUNCTIONS_BASE_URL}/user`,
+    { dark: darkTheme },
+    { authorization: `Bearer ${token}`, 'Content-Type': 'application/json' }
+  );
 }
 
 export function updateTrackShows(trackShows, token) {

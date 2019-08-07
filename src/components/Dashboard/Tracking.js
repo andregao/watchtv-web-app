@@ -1,12 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {
-  Badge,
-  Box,
-  Button,
-  ExpansionPanel,
-  ExpansionPanelDetails,
-  ExpansionPanelSummary
-} from '@material-ui/core';
+import { Badge, Box, Button, ExpansionPanel, ExpansionPanelDetails, ExpansionPanelSummary } from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import EpisodeList from '../Shows/Seasons/EpisodeList';
 import { getImgElAttr } from '../../services/api';
@@ -64,16 +57,16 @@ function Tracking({ trackShows, appSeasons }) {
         </ExpansionPanelSummary>
         <ExpansionPanelDetails>
           <Box display={'flex'} flexDirection={'column'}>
-            <Box
-              mb={'.5rem'}
-              component={Button}
-              variant={'outlined'}
-              fullWidth
-              color={'default'}
-              size={'small'}
-              onClick={() => navigateTo(`/tv/${show.id}`)}
-            >
-              Go To Show Page
+            <Box mb={'.5rem'}>
+              <Button
+                color={'secondary'}
+                variant={'contained'}
+                fullWidth
+                size={'small'}
+                onClick={() => navigateTo(`/tv/${show.id}`)}
+              >
+                Go To Show Page
+              </Button>
             </Box>
             {show.seasons.map(
               seasonNum =>

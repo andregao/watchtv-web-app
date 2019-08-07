@@ -1,8 +1,4 @@
-import {
-  DESELECT_SEASON,
-  SET_SELECTED_SEASON,
-  SET_SELECTED_SHOW
-} from '../actions/appActions';
+import { DESELECT_SEASON, SET_SELECTED_SEASON, SET_SELECTED_SHOW } from '../actions/appActions';
 import { GET_SHOW_DETAIL_SUCCESS } from '../actions/apiActions';
 
 const initialState = {

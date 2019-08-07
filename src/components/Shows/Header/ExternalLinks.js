@@ -1,9 +1,8 @@
 import { Box } from '@material-ui/core';
-import { getImdbShowLink, getInstagramLink, getTwitterLink } from '../../../services/api';
+import { getImdbShowLink, getImgElAttr, getInstagramLink, getTwitterLink } from '../../../services/api';
 import imdbLogo from '../../../static/imdb.svg';
 import twitterLogo from '../../../static/twitter.svg';
 import instagramLogo from '../../../static/instagram.svg';
-import { getImgElAttr } from '../../../services/api';
 import React from 'react';
 import ExternalLink from './ExternalLink';
 

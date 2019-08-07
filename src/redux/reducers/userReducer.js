@@ -1,9 +1,10 @@
 import {
-  RECEIVE_USER_PROFILE,
   NOT_SIGNED_IN,
+  RECEIVE_USER_PROFILE,
+  SAVE_REDIRECT_SUCCESS,
+  SET_SUBMITTING,
   SIGN_IN_FAIL,
-  SIGN_UP_FAIL,
-  SET_SUBMITTING, SAVE_REDIRECT_SUCCESS
+  SIGN_UP_FAIL
 } from '../actions/authActions';
 import { FETCH_USER_DATA_FAIL, FETCH_USER_DATA_SUCCESS } from '../actions/dbActions';
 import {
@@ -11,6 +12,7 @@ import {
   REMOVE_FAVORITE,
   REMOVE_TRACK_SHOW,
   SORT_TRACK_SHOWS,
+  SWITCH_THEME,
   TRACK_SHOW,
   WATCH_EPISODE
 } from '../actions/userActions';
@@ -20,6 +22,7 @@ const initialState = {
   redirect: null,
   error: null,
   isSubmitting: false,
+  darkTheme: true,
   trackShows: [],
   favShows: []
 };
@@ -53,8 +56,15 @@ export default function userReducer(state = initialState, action) {
     case FETCH_USER_DATA_SUCCESS: {
       return {
         ...state,
+        darkTheme: payload.dark,
         trackShows: payload.track,
         favShows: payload.fav
+      };
+    }
+    case SWITCH_THEME: {
+      return {
+        ...state,
+        darkTheme: !state.darkTheme
       };
     }
     case WATCH_EPISODE: {

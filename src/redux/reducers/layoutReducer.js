@@ -1,9 +1,11 @@
 import {
-  TOGGLE_SEARCH,
   TOGGLE_EPISODE_DETAIL,
+  TOGGLE_NOTIFICATION,
+  TOGGLE_SEARCH,
   TOGGLE_SIDENAV,
-  TOGGLE_TRACK_WIZARD, TOGGLE_NOTIFICATION
+  TOGGLE_TRACK_WIZARD
 } from '../actions/layoutActions';
+import { GET_SHOW_DETAIL_FAIL } from '../actions/apiActions';
 
 const initialState = {
   searchOpen: false,
@@ -28,11 +30,12 @@ export default function layoutReducer(state = initialState, action) {
         sidenavOpen: !state.sidenavOpen
       };
     }
-    case TOGGLE_NOTIFICATION: {
+    case TOGGLE_NOTIFICATION:
+    case GET_SHOW_DETAIL_FAIL: {
       return {
         ...state,
-        notification: action.payload,
-      }
+        notification: action.payload
+      };
     }
     case TOGGLE_EPISODE_DETAIL: {
       return {

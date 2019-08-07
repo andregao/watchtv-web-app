@@ -1,6 +1,8 @@
-import React, { useEffect, useState, forwardRef } from 'react';
+import React, { forwardRef, useEffect, useState } from 'react';
 import {
   AppBar,
+  Box,
+  Container,
   Dialog,
   DialogContent,
   Divider,
@@ -8,9 +10,7 @@ import {
   Slide,
   TextField,
   Toolbar,
-  Typography,
-  Box,
-  Container
+  Typography
 } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import { connect } from 'react-redux';

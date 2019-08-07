@@ -1,6 +1,6 @@
 import { combineEpics, ofType } from 'redux-observable';
-import { catchError, debounceTime, flatMap, map, pluck, switchMap, withLatestFrom } from 'rxjs/operators';
-import { updateFavShow, fetchUserData, updateTrackShows } from '../../services/db';
+import { catchError, debounceTime, flatMap, map, switchMap, withLatestFrom } from 'rxjs/operators';
+import { fetchUserData, updateFavShow, updateTheme, updateTrackShows } from '../../services/db';
 import { userToken$ } from '../../services/auth';
 import { DbActions, FETCH_USER_DATA, UPDATE_TRACK_SHOWS } from '../actions/dbActions';
 import { RECEIVE_USER_PROFILE } from '../actions/authActions';
@@ -8,7 +8,9 @@ import {
   FAVORITE_SHOW,
   REMOVE_FAVORITE,
   REMOVE_TRACK_SHOW,
+  SWITCH_THEME,
   TRACK_SHOW,
+  UserActions,
   WATCH_EPISODE
 } from '../actions/userActions';
 import { ApiActions } from '../actions/apiActions';
@@ -73,11 +75,24 @@ const favShowEpic = (actions$, state$) =>
     )
   );
 
+const switchThemeEpic = (actions$, state$) =>
+  actions$.pipe(
+    ofType(SWITCH_THEME),
+    debounceTime(8000),
+    withLatestFrom(userToken$),
+    switchMap(([, token]) =>
+      updateTheme(state$.value.user.darkTheme, token).pipe(
+        map(() => UserActions.switchThemeSuccess())
+      )
+    )
+  );
+
 export const dbEpics = combineEpics(
   receiveUserProfileEpic,
   fetchUserDataEpic,
   watchEpisodeEpic,
   trackShowEpic,
   updateTrackShowsEpic,
-  favShowEpic
+  favShowEpic,
+  switchThemeEpic
 );

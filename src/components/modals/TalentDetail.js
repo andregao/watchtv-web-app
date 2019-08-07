@@ -1,9 +1,10 @@
 import {
-  Box, Button,
+  Box,
+  Button,
   Container,
-  Dialog, DialogActions,
+  Dialog,
+  DialogActions,
   DialogContent,
-  DialogContentText,
   DialogTitle,
   Link,
   Typography

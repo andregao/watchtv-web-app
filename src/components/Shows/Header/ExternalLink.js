@@ -3,10 +3,10 @@ import React from 'react';
 import styled from 'styled-components';
 import { getExternalLinkAttr } from '../../../services/api';
 
-function ExternalLink({ link, imgAttr, alt, imdb = null }) {
+function ExternalLink({ link, imgAttr, alt, imdb }) {
   return (
     <>
-      {imdb && (
+      {imdb && imdb.rating && (
         <Box
           display={'flex'}
           flexDirection={'column'}
@@ -37,7 +37,7 @@ function ExternalLink({ link, imgAttr, alt, imdb = null }) {
         {...getExternalLinkAttr()}
       >
         <LogoContainer>
-          <Logo {...imgAttr} />
+          <Logo alt={alt} {...imgAttr} />
         </LogoContainer>
       </Box>
     </>

@@ -73,6 +73,7 @@ const EpisodeList = ({ episodes, watched, dispatch }) => {
 const EpisodeThumbnail = styled.img`
   width: 100%;
   object-fit: contain;
+  cursor: pointer;
 `;
 
 const EpisodeOverview = styled(Typography)`

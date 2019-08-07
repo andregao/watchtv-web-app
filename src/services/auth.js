@@ -1,10 +1,10 @@
 import { BehaviorSubject, from, ReplaySubject, Subject } from 'rxjs';
 import { take, takeUntil } from 'rxjs/operators';
-
 // development firebase setup
 import * as firebase from 'firebase/app';
 import 'firebase/auth';
 import firebaseConfig from './firebaseConfig';
+
 firebase.initializeApp(firebaseConfig);
 // end of development setup
 
@@ -41,7 +41,7 @@ function handleAuthChange(authUser) {
       uid,
       providerData: [{ providerId }],
       email,
-      displayName
+      displayName,
     } = authUser;
     const localUser = { uid, providerId, email, displayName };
     auth.currentUser.getIdToken(true).then(token => {
@@ -59,8 +59,8 @@ export function signUpWithEmail({ email, password }) {
   return from(auth.createUserWithEmailAndPassword(email.trim(), password));
 }
 
-export function signInWithGoogle(){
-  auth.signInWithRedirect(provider);
+export function signInWithGoogle() {
+  return auth.signInWithRedirect(provider);
 }
 
 export function signOut() {

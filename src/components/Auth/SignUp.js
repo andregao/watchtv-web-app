@@ -36,7 +36,7 @@ function SignUp({ userProfile,redirect, dispatch, authError, isSubmitting, histo
         <CardHeader title={'Sign Up'} />
         <CardContent>
           <TextField
-            label="name"
+            label="nickname"
             name="name"
             fullWidth
             value={values.name}

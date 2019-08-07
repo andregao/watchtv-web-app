@@ -1,7 +1,7 @@
 const https = require('https');
 const { authGuard } = require('./middleware/auth');
-const { app, functions, db } = require('./utils/config');
-const { tmdbKey, omdbKey, getApiConfig, fetchUserData,updateUserData } = require('./handlers/api');
+const { app, functions, db, sgMail } = require('./utils/config');
+const { tmdbKey, omdbKey, getApiConfig, fetchUserData, updateUserData } = require('./handlers/api');
 const { countries } = require('./utils/countries');
 
 app.get('/api/config', getApiConfig);
@@ -40,4 +40,17 @@ exports.readTmdbConfigs = functions.pubsub.schedule('every 72 hours').onRun(asyn
     const p2 = db.doc('watchtv-dev/api-config').set(myConfig);
     return Promise.all([p1, p2]);
   });
+});
+
+exports.sendWelcomeEmail = functions.auth.user().onCreate(user => {
+  const { email, displayName } = user;
+  const msg = {
+    to: email,
+    from: { email: 'hi@andregao.com', name: 'WatchTV Web App' },
+    templateId: 'd-3f935e07380a45b4a9b7043af51ac865',
+    dynamic_template_data: {
+      displayName
+    }
+  };
+  return sgMail.send(msg);
 });

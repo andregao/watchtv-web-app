@@ -1,7 +1,7 @@
 import { apiInit$, initializeApi } from './api';
 import { forkJoin, Subject } from 'rxjs';
 import { authInit$, initializeAuth } from './auth';
-import { take, takeUntil } from 'rxjs/operators';
+import { take } from 'rxjs/operators';
 
 const appInit = new Subject();
 export const appInit$ = appInit.asObservable().pipe(take(1));

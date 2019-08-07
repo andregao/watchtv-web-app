@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useState } from 'react';
 import {
   Box,
   Container,
@@ -11,7 +11,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { connect } from 'react-redux';
 import Talent from './Talent';
 
-function Cast({ id, shows }) {
+const Cast = ({ id, shows }) => {
   const cast = shows[id].credits.cast;
   const [size, setSize] = useState({ width: 0, height: 0 });
 
@@ -28,21 +28,21 @@ function Cast({ id, shows }) {
           <ExpansionPanelDetails>
             <Box display={'flex'} flexWrap={'wrap'} justifyContent={'space-evenly'}>
               {cast &&
-                cast.map((talent, index) => (
-                  <Talent
-                    key={talent.id}
-                    talent={talent}
-                    size={size}
-                    setSize={index === 0 ? setSize : null}
-                  />
-                ))}
+              cast.map((talent, index) => (
+                <Talent
+                  key={talent.id}
+                  talent={talent}
+                  size={size}
+                  setSize={index === 0 ? setSize : null}
+                />
+              ))}
             </Box>
           </ExpansionPanelDetails>
         </ExpansionPanel>
       </Box>
     </Container>
   );
-}
+};
 
 const mapStateToProps = state => ({ shows: state.shows });
 
