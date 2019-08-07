@@ -36,7 +36,7 @@ const Notification = ({ history, notification, dispatch }) => {
         message={
           <Box id="notification-message" display={'flex'} alignItems={'center'}>
             {config && config.icon}
-            <Typography color={'textPrimary'} variant={'body1'} style={{ paddingLeft: '1rem' }}>
+            <Typography color={'textPrimary'} variant={'body2'} style={{ paddingLeft: '1rem' }}>
               {message}
             </Typography>
           </Box>

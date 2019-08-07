@@ -60,13 +60,13 @@ export function fetchShowDetail(id) {
                 ''
               ),
               runtime: `${tmdbData.episode_run_time[0]} mins`,
-              country: tmdbData.origin_country
+              country: getCountryName(tmdbData.origin_country[0])
             };
             return [
               {
                 ...tmdbData,
                 imdb: extraInfo,
-                error: {message:'OMDB API is down, TMDB fallback data used', variant:'info'}
+                error: {message:'OMDB API is down, unable to get IMDB rating', variant:'info'}
               }
             ];
           })
