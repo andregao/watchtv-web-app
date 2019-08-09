@@ -22,7 +22,7 @@ const initialValues = {
   password: ''
 };
 
-function SignIn({ userProfile, redirect, dispatch, authError, isSubmitting, history }) {
+const SignIn = ({ userProfile, redirect, dispatch, authError, isSubmitting, history }) => {
   useEffect(() => {
     if (userProfile && userProfile !== 'No User') {
       redirect ? history.push(`/tv/${redirect}`) : history.push('/dashboard');
@@ -93,7 +93,7 @@ function SignIn({ userProfile, redirect, dispatch, authError, isSubmitting, hist
       <GoogleButton />
     </form>
   );
-}
+};
 
 const mapStateToProps = state => ({
   userProfile: state.user.profile,

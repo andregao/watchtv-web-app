@@ -15,7 +15,7 @@ const initialValues = {
   confirmPassword: ''
 };
 
-function SignUp({ userProfile,redirect, dispatch, authError, isSubmitting, history }) {
+const SignUp = ({ userProfile,redirect, dispatch, authError, isSubmitting, history }) =>{
   useEffect(() => {
     if (userProfile && userProfile !== 'No User') {
       redirect ? history.push(`/tv/${redirect}`) : history.push('/dashboard');

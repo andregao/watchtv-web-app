@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React from 'react';
+import styled from 'styled-components';
 import {
   Box,
   Container,
@@ -13,7 +14,6 @@ import Talent from './Talent';
 
 const Cast = ({ id, shows }) => {
   const cast = shows[id].credits.cast;
-  const [size, setSize] = useState({ width: 0, height: 0 });
 
   return (
     <Container>
@@ -26,23 +26,20 @@ const Cast = ({ id, shows }) => {
             </Box>
           </ExpansionPanelSummary>
           <ExpansionPanelDetails>
-            <Box display={'flex'} flexWrap={'wrap'} justifyContent={'space-evenly'}>
-              {cast &&
-              cast.map((talent, index) => (
-                <Talent
-                  key={talent.id}
-                  talent={talent}
-                  size={size}
-                  setSize={index === 0 ? setSize : null}
-                />
-              ))}
-            </Box>
+            <TalentsContainer>
+              {cast && cast.map(talent => <Talent key={talent.id} talent={talent} />)}
+            </TalentsContainer>
           </ExpansionPanelDetails>
         </ExpansionPanel>
       </Box>
     </Container>
   );
 };
+
+const TalentsContainer = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+`;
 
 const mapStateToProps = state => ({ shows: state.shows });
 

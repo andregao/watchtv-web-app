@@ -5,7 +5,7 @@ import ShowList from '../Shows/ShowList';
 import Tracking from './Tracking';
 import { LayoutActions } from '../../redux/actions/layoutActions';
 
-function Dashboard({ userProfile, trackShows, favShows, appSeasons, history,dispatch }) {
+const Dashboard = ({ userProfile, trackShows, favShows, appSeasons, history, dispatch }) => {
   useEffect(() => {
     userProfile === 'No User' && history.push('/welcome');
   }, [userProfile]);
@@ -35,7 +35,7 @@ function Dashboard({ userProfile, trackShows, favShows, appSeasons, history,disp
       </TabContent>
     </Box>
   );
-}
+};
 
 function TabContent({ selectedIndex, ownIndex, children, ...rest }) {
   return (

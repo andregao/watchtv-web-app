@@ -6,10 +6,10 @@ import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { LayoutActions } from '../../redux/actions/layoutActions';
 import { AuthActions } from '../../redux/actions/authActions';
-import { LoadingCircle } from './LoadingCircle';
+import LoadingCircle from './LoadingCircle';
 import { UserActions } from '../../redux/actions/userActions';
 
-function Header({ userProfile, dispatch }) {
+const Header = ({ userProfile, dispatch }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const handleOpenMenu = e => setAnchorEl(e.currentTarget);
   const handleCloseMenu = () => setAnchorEl(null);
@@ -54,7 +54,7 @@ function Header({ userProfile, dispatch }) {
                 >
                   {userProfile.displayName.length < 13
                     ? userProfile.displayName
-                    : `${userProfile.displayName.slice(0,12)}...`}
+                    : `${userProfile.displayName.slice(0, 12)}...`}
                 </Button>
                 <Menu
                   anchorEl={anchorEl}
@@ -84,7 +84,7 @@ function Header({ userProfile, dispatch }) {
       </Box>
     </AppBar>
   );
-}
+};
 
 const mapStateToProps = state => ({
   userProfile: state.user.profile

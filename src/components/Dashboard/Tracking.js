@@ -7,7 +7,7 @@ import { Poster } from '../Shows/ShowList';
 import { deepClone } from '../../redux/reducers/userReducer';
 import { navigateTo } from '../../services/app';
 
-function Tracking({ trackShows, appSeasons }) {
+const Tracking = ({ trackShows, appSeasons }) => {
   const [expansionControl, setExpansionControl] = useState({});
   const handleExpansionToggle = (showId, e, isExpanded) => {
     setExpansionControl({ [showId]: isExpanded });
@@ -86,6 +86,6 @@ function Tracking({ trackShows, appSeasons }) {
       </ExpansionPanel>
     ))
   );
-}
+};
 
 export default Tracking;
